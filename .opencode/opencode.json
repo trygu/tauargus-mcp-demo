@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "tauargus": {
+        "type": "local",
+        "command": ["uvx", "pytauargus-mcp@0.8.1"]
+      }
+    }
+  }
+}
