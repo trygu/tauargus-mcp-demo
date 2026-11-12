@@ -22,6 +22,13 @@ municipalities.
 | `maned` | Month, 1-12 |
 | `verdi` | Numeric response variable, always 1 |
 
+The kommunenummer codes follow the current SSB numbering, which was
+renumbered from 1 January 2024 to follow the new county structure
+(Oslo is 0301, not the pre-2024 0101). The codes were verified
+against the SSB Klass API (classification 131, "Standard for
+kommuneinndeling"):
+`https://data.ssb.no/api/klass/v1/classifications/131/codesAt?date=2026-06-01`.
+
 The file is event-level only, with no person-level data, so it is
 privacy-safe by construction. Summing `verdi` per `kommunenummer` x
 `type` gives the births-and-deaths-per-municipality table. The 11

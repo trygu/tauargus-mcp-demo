@@ -25,7 +25,9 @@ official SSB municipality list (classification 131; populations as of
 1 January 2026). All event counts are synthetic. Note: the SSB codes
 were renumbered from 1 January 2024 (Oslo 0301, Bergen 4601, Trondheim
 5001, Stavanger 1103, Kristiansand 4204); Lenvik was merged into Senja
-in 2020 and is no longer a municipality.
+in 2020 and is no longer a municipality. Codes verified against the SSB
+Klass API:
+https://data.ssb.no/api/klass/v1/classifications/131/codesAt?date=2026-06-01
 """
 
 import csv
