@@ -245,7 +245,10 @@ Claude Code and VS Code.
 
 The server exposes these tools:
 
+- `tauargus_version` - the package and engine versions that are running
 - `tauargus_explore` - inspect the microdata: variables, types, ranges
+- `tauargus_to_asc_rda` - write the `.asc`/`.rda` pair from a
+  `.parquet` path or a column dict
 - `tauargus_method_advice` - which protection methods apply to a table,
   their trade-offs, and the recommendation
 - `tauargus_assess` - run the safety rules without suppression: which
@@ -259,6 +262,9 @@ The server exposes these tools:
   it writes
 - `tauargus_audit` - verify the suppressed cells cannot be
   reconstructed (works on both `protect` workdirs and `.arb` batches)
+- `tauargus_report` - write the session up as a markdown protection
+  report (internal working document; `public=true` for the redacted
+  distribution copy)
 
 Cell status legend:
 
@@ -269,6 +275,16 @@ Cell status legend:
 | M | Secondary: withheld so a primary cell cannot be reconstructed |
 | P | Protected: a publication constraint; not selected for suppression |
 | E | Empty: no contributing records |
+
+## Basis
+
+The method advice, rule meanings and status legend describe standard
+statistical disclosure control practice as documented in the legacy
+tau-ARGUS 4.1 manual. The method trade-offs follow the overview in
+Meindl (2025), *Statistical Disclosure Control. Improving tools and
+methods to facilitate the application*, doctoral thesis, Johannes
+Kepler University Linz:
+<https://epub.jku.at/obvulihs/content/titleinfo/11740128>.
 
 ## Suggested test prompts
 
