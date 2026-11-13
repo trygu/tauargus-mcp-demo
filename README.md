@@ -59,7 +59,7 @@ For other MCP clients, use a config like this (Claude Desktop style):
   "mcpServers": {
     "tauargus": {
       "command": "uvx",
-      "args": ["pytauargus-mcp@0.8.1"]
+      "args": ["pytauargus-mcp"]
     }
   }
 }
