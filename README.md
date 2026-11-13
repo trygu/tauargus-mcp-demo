@@ -69,9 +69,10 @@ smallest municipality, has only 6 non-empty cells in that table - all
 of them single events.
 
 `generate_data.py` (Python 3 standard library, seed 20260) produced the
-committed CSV, and `csv_to_parquet.py` produced the committed parquet,
-so the demo works without running either. If you change the
-generator, run both to keep the committed files in sync.
+committed CSV, and `csv_to_parquet.py` / `csv_to_asc_rda.py` produced
+the committed parquet and `.asc`/`.rda` pair, so the demo works without
+running any of them. If you change the generator, run all three to
+keep the committed files in sync.
 
 ## Which files can you test with?
 
@@ -95,7 +96,71 @@ Column conventions, enforced by the engine:
   infers types from the values.
 - For the batch flow, `tauargus_build_arb` writes a `.arb` file from
   the `.asc`/`.rda` pair, `tauargus_run_arb` runs it, and
-  `tauargus_audit` verifies the result.
+  `tauargus_audit` verifies the result. The repo commits
+  `data/microdata_2026.asc` and `data/microdata_2026.rda` (the native
+  fixed-width pair), so the batch flow works out of the box.
+
+## The batch (.arb) flow
+
+The batch flow is the same protect + audit cycle, but driven by a
+plain-text `.arb` file instead of tool arguments:
+
+1. `tauargus_build_arb` - writes the `.arb` from the `.asc`/`.rda`
+   pair (one table per call; it fills in the absolute data-file paths
+   itself).
+2. `tauargus_run_arb` - runs the batch. The suppression solve happens
+   here; it is one blocking call.
+3. `tauargus_audit` - verifies the suppressed cells, per table.
+
+A single-table batch for `municipality` x `event` looks like this
+(path shown as written, i.e. absolute):
+
+```
+<OPENMICRODATA> "/.../data/microdata_2026.asc"
+<OPENMETADATA> "/.../data/microdata_2026.rda"
+<SPECIFYTABLE> "municipality""event"|"value"||
+<SAFETYRULE> P(25,1)
+<READMICRODATA>
+<SUPPRESS> OPT(1)
+<WRITETABLE> (1,4,,"tab1.tab")
+```
+
+`tauargus_build_arb` only writes one table per file, but a `.arb` is
+just text - for several tables, hand-write or extend the file. Each
+`<SPECIFYTABLE>` needs its own `<SAFETYRULE>` line, and each table gets
+its own `<SUPPRESS>` (the number in `OPT(n)` is the table number) and
+`<WRITETABLE>`:
+
+```
+<OPENMICRODATA> "/.../data/microdata_2026.asc"
+<OPENMETADATA> "/.../data/microdata_2026.rda"
+<SPECIFYTABLE> "municipality""event"|"value"||
+<SAFETYRULE> P(25,1)
+<SPECIFYTABLE> "municipality""month""event"|"value"||
+<SAFETYRULE> P(25,1)
+<READMICRODATA>
+<SUPPRESS> OPT(1)
+<SUPPRESS> OPT(2)
+<WRITETABLE> (1,4,,"tab1.tab")
+<WRITETABLE> (2,4,,"tab2.tab")
+```
+
+Path conventions inside a `.arb`:
+
+- `<OPENMICRODATA>`/`<OPENMETADATA>` take absolute paths (the build
+  tool writes them out absolute).
+- `<WRITETABLE>` targets resolve **relative to the .arb file's
+  directory**, not the working directory - a `data/`-relative name
+  like `data/tab1.tab` next to a `data/`-placed `.arb` would look for
+  `data/data/tab1.tab`.
+
+(Verified on the demo data with P(25,1) + OPT suppression.)
+
+- Single-table batch: identical to the direct `protect` flow - Utsira
+  birth (2) primary (U), three secondary (M) cells.
+- Two-table batch: the 3-dimensional `municipality` x `month` x
+  `event` table adds 25 primary (U) and 44 secondary (M)
+  suppressions; both tables audit clean.
 
 ## Setup
 
@@ -178,7 +243,12 @@ The server exposes these tools:
   P(25,1): a cell where one record contributes at least 25 percent)
 - `tauargus_protect` - build, suppress and write the tables; the
   suppression solve can be slow on large or high-dimensional tables
-- `tauargus_audit` - verify the suppressed cells cannot be reconstructed
+- `tauargus_build_arb` - write a `.arb` batch file from the
+  `.asc`/`.rda` pair (one table per call)
+- `tauargus_run_arb` - run a `.arb` batch and report the table files
+  it writes
+- `tauargus_audit` - verify the suppressed cells cannot be
+  reconstructed (works on both `protect` workdirs and `.arb` batches)
 
 Cell status legend:
 
@@ -214,6 +284,14 @@ Variations:
   and compare its suppressions to the default method."
 - "Create a batch with two tables: municipality x event, and
   municipality x month x event. Protect both and audit each."
+- "Build a .arb batch file for the municipality x event table, show
+  me the file, run it, and audit the result."
+- "Extend that single-table .arb with a second table (municipality x
+  month x event) and re-run the batch. What do you have to add?"
+- "Re-run the two-table batch with the safety rule changed to P(80,1)
+  in the .arb file. How do the suppressions change?"
+- "What is the difference between the direct protect flow and the
+  .arb batch flow, and when would you use each?"
 - "Explain the difference between primary (U) and secondary (M)
   suppressions using cells from this data."
 - "A journalist asks for the number of deaths in Snasa in January.
