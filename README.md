@@ -38,12 +38,9 @@ natively; the CSV is the human-readable source of truth.
 | `month` | Month, 1-12 (string; explanatory variables stay categorical) |
 | `value` | Numeric response variable, always 1 |
 
-The municipality codes follow the current SSB numbering, which was
-renumbered from 1 January 2024 to follow the new county structure
-(Oslo is 0301, not the pre-2024 0101). The codes were verified
-against the SSB Klass API (classification 131, "Standard for
-kommuneinndeling"):
-`https://data.ssb.no/api/klass/v1/classifications/131/codesAt?date=2026-06-01`.
+The municipality codes follow the current SSB numbering, renumbered
+from 1 January 2024 to the new county structure (Oslo is 0301, not the
+pre-2024 0101); the verification source is in `generate_data.py`.
 
 The file is event-level only, with no person-level data, so it is
 privacy-safe by construction. Summing `value` per `municipality` x
@@ -51,12 +48,10 @@ privacy-safe by construction. Summing `value` per `municipality` x
 municipalities span a wide population range, from Utsira (219 people)
 to Oslo (about 729,000).
 
-The per-municipality event counts are drawn from Poisson models whose
-rates are calibrated to official SSB 2025 statistics: births from
-table 04231 ("Levendefodte, etter kjonn (K)"), deaths from table 08425
-("Dode, etter kjonn (K)"), divided by the 1 January 2026 populations
-(table 07459). Birth rates run 4.6-12.7 per 1000 and death rates
-10.4-28.0 per 1000.
+The per-municipality event counts are drawn from Poisson models with
+those rates, plus a mild male skew in deaths and a winter bump in the
+death months; `generate_data.py` carries the full model and the
+reference-data provenance.
 
 Cross-tables that include a `month` dimension produce small cells in
 the small municipalities. In the 4-dimensional cross-table
@@ -136,24 +131,13 @@ A single-table batch for `municipality` x `event` looks like this
 ```
 
 `tauargus_build_arb` only writes one table per file, but a `.arb` is
-just text - for several tables, hand-write or extend the file. Each
-`<SPECIFYTABLE>` needs its own `<SAFETYRULE>` line, and each table gets
-its own `<SUPPRESS>` (the number in `OPT(n)` is the table number) and
-`<WRITETABLE>`:
-
-```
-<OPENMICRODATA> "/.../data/microdata_2026.asc"
-<OPENMETADATA> "/.../data/microdata_2026.rda"
-<SPECIFYTABLE> "municipality""event"|"value"||
-<SAFETYRULE> P(25,1)
-<SPECIFYTABLE> "municipality""month""event"|"value"||
-<SAFETYRULE> P(25,1)
-<READMICRODATA>
-<SUPPRESS> OPT(1)
-<SUPPRESS> OPT(2)
-<WRITETABLE> (1,4,,"tab1.tab")
-<WRITETABLE> (2,4,,"tab2.tab")
-```
+just text - for several tables, extend the file by hand. Each table
+needs its own `<SAFETYRULE>` line after its `<SPECIFYTABLE>`, and its
+own `<SUPPRESS>` (the number in `OPT(n)` is the table number) and
+`<WRITETABLE>`. A two-table batch is the file above with the second
+table's `<SPECIFYTABLE>` and rule added before `<READMICRODATA>`, and
+`<SUPPRESS> OPT(2)` plus `<WRITETABLE> (2,4,,"tab2.tab")` added after
+the first table's.
 
 Path conventions inside a `.arb`:
 
@@ -300,30 +284,13 @@ Kepler University Linz:
 Variations:
 
 - "Assess the 4-dimensional table with P(80,1) instead of the
-  default P(25,1). Which flagged cells does the stricter rule
-  let through?"
-- "Assess with the minimum-frequency rule FREQ(5,20) and the zero-cell
-  rule ZERO(10). What does each one flag, and why?"
-- "Which protection methods apply to the 4-dimensional table, and
-  which are available in this build?"
+  default P(25,1). Which cells does the looser rule let through?"
 - "Protect the 4-dimensional table with modular suppression (MOD)
   and compare its suppressions to the default method."
 - "Create a batch with two tables: municipality x event, and
   municipality x month x event. Protect both and audit each."
-- "Build a .arb batch file for the municipality x event table, show
-  me the file, run it, and audit the result."
-- "Extend that single-table .arb with a second table (municipality x
-  month x event) and re-run the batch. What do you have to add?"
-- "Re-run the two-table batch with the safety rule changed to P(80,1)
-  in the .arb file. How do the suppressions change?"
-- "What is the difference between the direct protect flow and the
-  .arb batch flow, and when would you use each?"
-- "Explain the difference between primary (U) and secondary (M)
-  suppressions using cells from this data."
 - "A journalist asks for the number of deaths in Snasa in January.
   Given the protected table, is it safe to answer?"
-- "Read the protection-methods documentation and summarize when
-  optimal suppression is worth the extra computation."
 
 ## What to expect
 
