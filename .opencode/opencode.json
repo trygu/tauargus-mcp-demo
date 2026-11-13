@@ -4,7 +4,7 @@
     "servers": {
       "tauargus": {
         "type": "local",
-        "command": ["uvx", "pytauargus-mcp@0.8.1"]
+        "command": ["uvx", "pytauargus-mcp"]
       }
     }
   }
