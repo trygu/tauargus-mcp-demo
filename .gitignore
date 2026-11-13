@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 data/scratch/
+# tau-ARGUS / SCIP solver artifacts (leaked into the cwd by the OPT solve)
+CSPlogfile.txt
+FullJJ.log
+cspSCIP.*
