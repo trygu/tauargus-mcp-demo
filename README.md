@@ -73,6 +73,30 @@ committed CSV, and `csv_to_parquet.py` produced the committed parquet,
 so the demo works without running either. If you change the
 generator, run both to keep the committed files in sync.
 
+## Which files can you test with?
+
+The microdata tools accept these input forms:
+
+| Input | `tauargus_explore` | `tauargus_assess` / `tauargus_protect` |
+| --- | --- | --- |
+| `.parquet` file path | yes | yes |
+| in-memory dict (column name to list of values) | no | yes |
+| `.asc` + sibling `.rda` (native tau-ARGUS fixed-width format) | yes | via `tauargus_build_arb` / `tauargus_run_arb` |
+| other tabular sources (CSV, etc.) | convert first: `csv_to_parquet.py` or pass the columns inline as a dict | same |
+
+Column conventions, enforced by the engine:
+
+- Explanatory (dimension) variables must be categorical - keep them
+  as strings, e.g. `month` as `"1"`..`"12"`. A numeric explanatory
+  variable makes the engine fail with "SetTable failed".
+- The response variable must be numeric (here: `value`, always 1).
+- `tauargus_explore` on `.asc`/`.rda` reports the engine variable
+  types (CATEGORICAL, RESPONSE, WEIGHT, ...); on `.parquet` it
+  infers types from the values.
+- For the batch flow, `tauargus_build_arb` writes a `.arb` file from
+  the `.asc`/`.rda` pair, `tauargus_run_arb` runs it, and
+  `tauargus_audit` verifies the result.
+
 ## Setup
 
 Every example below starts the same server: `uvx pytauargus-mcp`
