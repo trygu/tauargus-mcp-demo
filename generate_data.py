@@ -39,20 +39,22 @@ SEED = 20260
 BIRTH_RATE = 0.0105
 
 # (kommunenummer, name for the summary, population 1 Jan 2026, death_rate)
-# Large, young urban municipalities: death rate 0.085-0.095.
-# Small, older rural municipalities: death rate 0.100-0.130.
+# Death rates are per-mille as proportions: large, young urban
+# municipalities 0.0085-0.0095 (8.5-9.5 per 1000), small, older rural
+# municipalities 0.0100-0.0130 (10.0-13.0 per 1000) - the same order of
+# magnitude as the crude Norwegian death rate.
 MUNICIPALITIES = [
-    ("0301", "Oslo",         728714, 0.085),
-    ("4601", "Bergen",       294860, 0.087),
-    ("5001", "Trondheim",    218460, 0.088),
-    ("1103", "Stavanger",    151669, 0.090),
-    ("4204", "Kristiansand", 119287, 0.095),
-    ("1833", "Rana",          25844, 0.100),
-    ("1860", "Vestvagoy",     11606, 0.105),
-    ("1866", "Hadsel",         8374, 0.110),
-    ("5607", "Vadso",          5808, 0.115),
-    ("5612", "Kautokeino",     2886, 0.125),
-    ("5041", "Snasa",          2141, 0.130),
+    ("0301", "Oslo",         728714, 0.0085),
+    ("4601", "Bergen",       294860, 0.0087),
+    ("5001", "Trondheim",    218460, 0.0088),
+    ("1103", "Stavanger",    151669, 0.0090),
+    ("4204", "Kristiansand", 119287, 0.0095),
+    ("1833", "Rana",          25844, 0.0100),
+    ("1860", "Vestvagoy",     11606, 0.0105),
+    ("1866", "Hadsel",         8374, 0.0110),
+    ("5607", "Vadso",          5808, 0.0115),
+    ("5612", "Kautokeino",     2886, 0.0125),
+    ("5041", "Snasa",          2141, 0.0130),
 ]
 
 DEATH_MALE_SHARE_SMALL = 0.52  # small municipalities (population < 25000)

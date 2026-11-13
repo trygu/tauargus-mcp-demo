@@ -37,11 +37,11 @@ people) to Oslo (about 729,000).
 
 Cross-tables that include a `maned` dimension produce small cells in
 the small municipalities. In the 4-dimensional cross-table
-`kommunenummer` x `type` x `maned` x `manndom`, 89 of the 282
+`kommunenummer` x `type` x `maned` x `manndom`, 158 of the 251
 small-municipality cells hold 1-4 events. That is what the disclosure
 rules flag: under the default P(25,1) rule, one record contributes at
 least 25 percent of such a cell. The corresponding large-municipality
-cells run from 35 to 4177 events.
+cells run from 27 to 429 events.
 
 `generate_data.py` (Python 3 standard library, seed 20260) produced the
 committed CSV, so the demo works without running the generator.
@@ -103,7 +103,7 @@ Cell status legend:
 ## What to expect
 
 - In the plain `kommunenummer` x `type` table, even the smallest cell
-  (29 events) is safe, so nothing is suppressed.
+  (19 events) is safe, so nothing is suppressed.
 - As soon as `maned` (and `manndom`) enter the cross-table, the small
   municipalities yield primary (U) suppressions, and the solver
   withholds neighboring values as secondary (M) suppressions.
