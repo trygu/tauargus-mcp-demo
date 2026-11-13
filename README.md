@@ -286,8 +286,8 @@ Variations:
 - "Assess the 4-dimensional table with P(80,1) instead of the
   default P(25,1). Which flagged cells does the stricter rule
   let through?"
-- "Assess with the minimum-frequency rule FREQ(5) and the zero-cell
-  rule ZERO. What does each one flag, and why?"
+- "Assess with the minimum-frequency rule FREQ(5,20) and the zero-cell
+  rule ZERO(10). What does each one flag, and why?"
 - "Which protection methods apply to the 4-dimensional table, and
   which are available in this build?"
 - "Protect the 4-dimensional table with modular suppression (MOD)
