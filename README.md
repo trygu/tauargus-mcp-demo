@@ -48,11 +48,32 @@ committed CSV, so the demo works without running the generator.
 
 ## Setup
 
+Every example below starts the same server: `uvx pytauargus-mcp`
+(a stdio server with no environment variables). All you need
+installed is [uv](https://docs.astral.sh/uv/).
+
+### OpenCode
+
 The repo commits `.opencode/opencode.json`, so opening this directory in
 OpenCode with `uvx` available connects the `tauargus` MCP server
 automatically.
 
-For other MCP clients, use a config like this (Claude Desktop style):
+### Claude
+
+**Claude Desktop**: add the block below to
+`claude_desktop_config.json`
+(`~/Library/Application Support/Claude/claude_desktop_config.json` on
+macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows).
+
+**Claude Code**: either run
+
+```sh
+claude mcp add tauargus -- uvx pytauargus-mcp
+```
+
+or commit a project-scope `.mcp.json` in the repo root (same block;
+Claude Code asks you to approve it the first time). Check the
+connection with `/mcp` inside a session.
 
 ```json
 {
@@ -64,6 +85,35 @@ For other MCP clients, use a config like this (Claude Desktop style):
   }
 }
 ```
+
+### Gemini CLI
+
+Add the same block to `~/.gemini/settings.json` (all projects) or
+`.gemini/settings.json` in the repo (this project only). Tools are
+exposed as `mcp_tauargus_*`; check the connection with `/mcp`.
+
+### VS Code (GitHub Copilot)
+
+Add to `.vscode/mcp.json` in the workspace (or use *Copilot: Add MCP
+Server* from the command palette and enter the command
+`uvx pytauargus-mcp`). Note the format difference: VS Code uses
+`servers` instead of `mcpServers` and requires `"type": "stdio"`.
+
+```json
+{
+  "servers": {
+    "tauargus": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["pytauargus-mcp"]
+    }
+  }
+}
+```
+
+Tip: VS Code also reads a portable `.mcp.json` in the repo root with
+the `mcpServers` block, so a single committed `.mcp.json` covers both
+Claude Code and VS Code.
 
 ## Tools
 
