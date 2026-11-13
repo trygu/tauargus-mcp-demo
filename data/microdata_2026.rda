@@ -1,0 +1,15 @@
+municipality 1 4
+  <RECODEABLE>
+  <TOTCODE> "Total"
+event 6 5
+  <RECODEABLE>
+  <TOTCODE> "Total"
+sex 12 1
+  <RECODEABLE>
+  <TOTCODE> "Total"
+month 14 2
+  <RECODEABLE>
+  <TOTCODE> "Total"
+value 17 1
+  <NUMERIC>
+  <DECIMALS> 0
