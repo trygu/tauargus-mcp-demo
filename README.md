@@ -82,9 +82,9 @@ asymmetric: `tauargus_explore` takes a file path only,
 in-memory column dict, and the batch flow takes the native
 `.asc`/`.rda` pair. The CSV is the source of truth; the parquet
 (3.5 kB) and the `.asc`/`.rda` pair exist so every flow starts
-without a conversion step. (If the server gained a converter tool -
-see [pytauargus#56](https://github.com/trygu/pytauargus/issues/56) -
-the repo could shrink to the CSV alone.)
+without a conversion step. If you need to convert a new dataset, the
+server's `tauargus_to_asc_rda` writes the `.asc`/`.rda` pair from a
+`.parquet` path or a column dict.
 
 The microdata tools accept these input forms:
 
