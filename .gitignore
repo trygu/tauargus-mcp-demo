@@ -6,3 +6,6 @@ data/scratch/
 CSPlogfile.txt
 FullJJ.log
 cspSCIP.*
+# batch artifacts: .arb files carry absolute paths, .tab are run outputs
+*.arb
+*.tab
